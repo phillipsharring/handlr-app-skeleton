@@ -2,11 +2,15 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 
+use Handlr\Core\Container;
 use Handlr\Core\Kernel;
 use Handlr\Core\Request;
 use Handlr\Core\Response;
+use Handlr\Core\Router;
 
-$kernel = new Kernel(HANDLR_APP_ROOT);
+$container = new Container();
+$router = new Router($container);
+$kernel = Kernel::getInstance($container, $router, HANDLR_APP_ROOT);
 
 $request = Request::fromGlobals();
 $response = new Response;
