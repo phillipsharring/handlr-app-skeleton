@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../bootstrap.php';
 
-use Handlr\Core\Container;
+use Handlr\Core\Container\Container;
 use Handlr\Core\Kernel;
 use Handlr\Core\Request;
 use Handlr\Core\Response;
