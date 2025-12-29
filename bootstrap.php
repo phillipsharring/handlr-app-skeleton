@@ -10,4 +10,4 @@ const HANDLR_APP_APP_PATH = __DIR__ . '/app';
 
 use Handlr\Config\Loader;
 
-Loader::load(HANDLR_APP_APP_PATH . '/config.php');
+// Config loading happens from `public/index.php` after the container is created.
