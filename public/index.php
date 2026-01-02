@@ -5,7 +5,7 @@ require_once __DIR__ . '/../bootstrap.php';
 use Handlr\Core\Kernel;
 use Handlr\Core\Request;
 use Handlr\Core\Response;
-use Handlr\Core\Router;
+use Handlr\Core\Routes\Router;
 
 $app = handlr_app();
 $container = $app['container'];

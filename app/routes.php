@@ -1,9 +1,9 @@
 <?php
 
-use Handlr\Core\Router;
-use Handlr\Handlers\ViewHandler;
+use Handlr\Core\Routes\Router;
+use Handlr\Pipes\ViewPipe;
 
 /** @var Router $router */
 $router->get('/', [
-    new ViewHandler('home'),
+    new ViewPipe('home'),
 ]);
