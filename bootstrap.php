@@ -10,6 +10,8 @@ const HANDLR_APP_APP_PATH = __DIR__ . '/app';
 
 use Handlr\Config\Loader;
 use Handlr\Core\Container\Container;
+use Handlr\Database\Db;
+use Handlr\Database\DbInterface;
 
 /**
  * App bootstrap used by both web entrypoints and CLI scripts.
@@ -36,6 +38,8 @@ function handlr_app(): array
     }
 
     $container = new Container();
+    $container->bind(DbInterface::class, Db::class);
+
     $configPath = HANDLR_APP_APP_PATH . '/config.php';
     $config = Loader::load($configPath, $container);
 
