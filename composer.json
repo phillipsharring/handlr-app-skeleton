@@ -15,10 +15,10 @@
     "test": "pest",
     "migrate": "php ./vendor/phillipsharring/handlr-framework/scripts/migrate.php up 1",
     "migrate:rollback": "php ./vendor/phillipsharring/handlr-framework/scripts/migrate.php rollback",
-    "make:migration": "php ./vendor/phillipsharring/handlr-framework/scripts/make-migration.php",
-    "make:seed": "php ./vendor/phillipsharring/handlr-framework/scripts/make-seeder.php",
     "seed": "php ./vendor/phillipsharring/handlr-framework/scripts/seed.php",
-    "make:scaffold": "php ./vendor/phillipsharring/handlr-framework/scripts/make-scaffold.php"
+    "make:migration": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:migration",
+    "make:seed": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:seeder",
+    "make:scaffold": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:scaffold"
   },
   "authors": [
     {
