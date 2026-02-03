@@ -1,5 +1,37 @@
 <?php
 
+/**
+ * Application Bootstrap
+ *
+ * Initializes the Handlr application by loading dependencies, environment variables,
+ * and configuring the DI container. This file is shared by both web entrypoints
+ * (public/index.php) and CLI scripts (migrations, seeders, etc.).
+ *
+ * @example Bootstrapping the app in a web entrypoint
+ * ```php
+ * require_once __DIR__ . '/../bootstrap.php';
+ *
+ * $app = handlr_app();
+ * $container = $app['container'];
+ * $config = $app['config'];
+ * ```
+ *
+ * @example Using the bootstrap in a CLI script
+ * ```php
+ * require_once __DIR__ . '/bootstrap.php';
+ *
+ * $app = handlr_app();
+ * $db = $app['container']->make(DbInterface::class);
+ * ```
+ *
+ * @example Accessing the config after bootstrap
+ * ```php
+ * $app = handlr_app();
+ * $dsn = $app['config']['database']['dsn'];
+ * $isDebug = $app['config']['app']['debug'];
+ * ```
+ */
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 if (!defined('HANDLR_APP_ROOT')) {
