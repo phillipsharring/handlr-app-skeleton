@@ -18,6 +18,8 @@
     "seed": "php ./vendor/phillipsharring/handlr-framework/scripts/seed.php",
     "make:migration": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:migration",
     "make:seed": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:seeder",
+    "make:record": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:record",
+    "make:table": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:table",
     "make:scaffold": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:scaffold"
   },
   "authors": [
