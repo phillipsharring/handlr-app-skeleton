@@ -40,10 +40,15 @@ if (!defined('HANDLR_APP_ROOT')) {
 
 const HANDLR_APP_APP_PATH = __DIR__ . '/app';
 
+use App\Auth\AuthContext;
+use App\Events\EventServiceProvider;
 use Handlr\Config\Loader;
 use Handlr\Core\Container\Container;
+use Handlr\Core\EventManager;
 use Handlr\Database\Db;
 use Handlr\Database\DbInterface;
+use Handlr\Log\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * App bootstrap used by both web entrypoints and CLI scripts.
@@ -71,9 +76,15 @@ function handlr_app(): array
 
     $container = new Container();
     $container->bind(DbInterface::class, Db::class);
+    $container->singleton(AuthContext::class);
+    $container->singleton(EventManager::class);
+    $container->singleton(LoggerInterface::class, new Logger(HANDLR_APP_ROOT . '/logs/app.log'));
 
     $configPath = HANDLR_APP_APP_PATH . '/config.php';
     $config = Loader::load($configPath, $container);
+
+    // Register event listeners
+    EventServiceProvider::register($container, $container->get(EventManager::class));
 
     $app = [
         'container' => $container,
