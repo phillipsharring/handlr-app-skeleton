@@ -40,8 +40,7 @@ if (!defined('HANDLR_APP_ROOT')) {
 
 const HANDLR_APP_APP_PATH = __DIR__ . '/app';
 
-use App\Auth\AuthContext;
-use App\Events\EventServiceProvider;
+use Dotenv\Dotenv;
 use Handlr\Config\Loader;
 use Handlr\Core\Container\Container;
 use Handlr\Core\EventManager;
@@ -70,21 +69,22 @@ function handlr_app(): array
     }
 
     // Load environment variables for both web + CLI usage.
-    if (class_exists(\Dotenv\Dotenv::class)) {
-        \Dotenv\Dotenv::createImmutable(HANDLR_APP_ROOT)->safeLoad();
+    if (class_exists(Dotenv::class)) {
+        Dotenv::createImmutable(HANDLR_APP_ROOT)->safeLoad();
     }
 
+    $appEnv = $_ENV['APP_ENV'] ?? 'local';
+
     $container = new Container();
-    $container->bind(DbInterface::class, Db::class);
-    $container->singleton(AuthContext::class);
     $container->singleton(EventManager::class);
     $container->singleton(LoggerInterface::class, new Logger(HANDLR_APP_ROOT . '/logs/app.log'));
+
+    $container->bind(DbInterface::class, Db::class);
 
     $configPath = HANDLR_APP_APP_PATH . '/config.php';
     $config = Loader::load($configPath, $container);
 
-    // Register event listeners
-    EventServiceProvider::register($container, $container->get(EventManager::class));
+    $container->singleton(DbInterface::class, $container->get(DbInterface::class));
 
     $app = [
         'container' => $container,

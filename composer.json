@@ -18,6 +18,9 @@
     "migrate:rollback": "php ./vendor/phillipsharring/handlr-framework/scripts/migrate.php rollback",
     "seed": "php ./vendor/phillipsharring/handlr-framework/scripts/seed.php",
     "seed:fresh": "php ./vendor/phillipsharring/handlr-framework/scripts/seed.php --fresh",
+    "dump-seeds": "php scripts/dump-seeds.php",
+    "fresh": "composer run migrate:fresh && composer run seed:fresh",
+    "export-fixtures": "php scripts/export-fixtures.php",
     "make:migration": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:migration",
     "make:seed": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:seeder",
     "make:record": "php ./vendor/phillipsharring/handlr-framework/scripts/make.php make:record",
@@ -38,14 +41,26 @@
     "psr/log": "^3.0",
     "vlucas/phpdotenv": "^5.6",
     "ramsey/uuid": "^4.7",
-    "phillipsharring/handlr-framework": "dev-main"
+    "phillipsharring/handlr-framework": "dev-main",
+    "symfony/console": "^7.0"
   },
   "require-dev": {
-    "roave/security-advisories": "dev-latest"
+    "roave/security-advisories": "dev-latest",
+    "pestphp/pest": "^4.4"
   },
   "autoload": {
     "psr-4": {
       "App\\": "app/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
     }
   }
 }
