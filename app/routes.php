@@ -3,54 +3,47 @@
 /**
  * Application Routes
  *
- * Defines the HTTP routes for the application using the Handlr Router.
- * Routes are defined as a pipeline of Pipe classes that handle the request/response cycle.
- *
- * The $router variable is injected by the Kernel when this file is loaded.
- *
- * @example Defining a simple GET route
- * ```php
- * $router->get('/hello', [HelloPipe::class]);
- * ```
- *
- * @example Defining a route with multiple pipes (middleware pattern)
- * ```php
- * $router->post('/api/users', [
- *     AuthMiddlewarePipe::class,
- *     ValidateInputPipe::class,
- *     CreateUserPipe::class,
- * ]);
- * ```
- *
- * @example Grouping routes with a shared prefix
- * ```php
- * $router->group('/api')
- *     ->get('/items', [ListItemsPipe::class])
- *     ->post('/items', [CreateItemPipe::class])
- *     ->end();
- * ```
- *
- * @example Grouping routes with shared middleware
- * ```php
- * $router->group('/admin', [AdminAuthPipe::class])
- *     ->get('/dashboard', [DashboardPipe::class])
- *     ->get('/users', [ListUsersPipe::class])
- *     ->end();
- * ```
- *
- * @example Route parameters with type constraints
- * ```php
- * $router->get('/users/{id:uuid}', [GetUserPipe::class]);
- * $router->get('/posts/{slug}', [GetPostPipe::class]);
- * ```
- *
  * @var Router $router The router instance provided by the Kernel
  */
 
+use App\Auth\GetAuthStatus;
+use App\Auth\Login\PostLoginAttempt;
+use App\Auth\Logout\GetLogout;
+use App\Auth\Signup\PostSignup;
+use Handlr\Auth\Pipes\RequireAuthPipe;
+use Handlr\Auth\Pipes\RequirePermissionPipe;
+use Handlr\Auth\Pipes\SessionAuthPipe;
+use Handlr\Auth\Pipes\StartSessionPipe;
 use Handlr\Core\Routes\Router;
+use Handlr\Csrf\CorsPipe;
+use Handlr\Csrf\EnsureCsrfTokenPipe;
+use Handlr\Csrf\VerifyCsrfTokenPipe;
+use Handlr\Csrf\VerifyOriginPipe;
 use Handlr\Pipes\ViewPipe;
 
 /** @var Router $router */
-$router->get('/', [
-    new ViewPipe('home'),
-]);
+
+// ── Public pages ──
+$router->get('/', [new ViewPipe('home')]);
+
+// ── API ──
+$router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
+    ->through([StartSessionPipe::class, SessionAuthPipe::class, EnsureCsrfTokenPipe::class, VerifyCsrfTokenPipe::class])
+
+        // ── Auth (public) ──
+        ->group('/auth')
+            ->get('/me', [GetAuthStatus::class])
+            ->post('/login', [PostLoginAttempt::class])
+            ->post('/signup', [PostSignup::class])
+            ->get('/logout', [GetLogout::class])
+        ->end()
+
+        // ── Authenticated routes ──
+        ->through([RequireAuthPipe::class])
+
+            // Add your authenticated API routes here
+
+        ->end()
+
+    ->end()
+->end();

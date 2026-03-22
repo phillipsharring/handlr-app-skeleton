@@ -40,7 +40,11 @@ if (!defined('HANDLR_APP_ROOT')) {
 
 const HANDLR_APP_APP_PATH = __DIR__ . '/app';
 
+use App\Auth\Data\UserPermissionsQuery;
+use App\Events\EventServiceProvider;
 use Dotenv\Dotenv;
+use Handlr\Auth\AuthContext;
+use Handlr\Auth\PermissionsProviderInterface;
 use Handlr\Config\Loader;
 use Handlr\Core\Container\Container;
 use Handlr\Core\EventManager;
@@ -76,6 +80,8 @@ function handlr_app(): array
     $appEnv = $_ENV['APP_ENV'] ?? 'local';
 
     $container = new Container();
+    $container->singleton(AuthContext::class);
+    $container->bind(PermissionsProviderInterface::class, UserPermissionsQuery::class);
     $container->singleton(EventManager::class);
     $container->singleton(LoggerInterface::class, new Logger(HANDLR_APP_ROOT . '/logs/app.log'));
 
@@ -85,6 +91,9 @@ function handlr_app(): array
     $config = Loader::load($configPath, $container);
 
     $container->singleton(DbInterface::class, $container->get(DbInterface::class));
+
+    // Register event listeners
+    EventServiceProvider::register($container, $container->get(EventManager::class));
 
     $app = [
         'container' => $container,
