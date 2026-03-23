@@ -10,6 +10,10 @@ use App\Auth\GetAuthStatus;
 use App\Auth\Login\PostLoginAttempt;
 use App\Auth\Logout\GetLogout;
 use App\Auth\Signup\PostSignup;
+use App\Profile\GetProfilePipe;
+use App\Profile\PatchUpdateEmail;
+use App\Profile\PatchUpdatePassword;
+use App\Profile\PatchUpdateUsername;
 use Handlr\Auth\Pipes\RequireAuthPipe;
 use Handlr\Auth\Pipes\RequirePermissionPipe;
 use Handlr\Auth\Pipes\SessionAuthPipe;
@@ -40,6 +44,14 @@ $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
 
         // ── Authenticated routes ──
         ->through([RequireAuthPipe::class])
+
+            // ── Profile ──
+            ->group('/profile')
+                ->get('', [GetProfilePipe::class])
+                ->patch('/username', [PatchUpdateUsername::class])
+                ->patch('/email', [PatchUpdateEmail::class])
+                ->patch('/password', [PatchUpdatePassword::class])
+            ->end()
 
             // Add your authenticated API routes here
 
