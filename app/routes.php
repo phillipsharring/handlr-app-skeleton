@@ -14,6 +14,12 @@ use App\Profile\GetProfilePipe;
 use App\Profile\PatchUpdateEmail;
 use App\Profile\PatchUpdatePassword;
 use App\Profile\PatchUpdateUsername;
+use Handlr\Ab\Pipes\CaptureAbEvent;
+use Handlr\Ab\Pipes\GetAbAssignments;
+use Handlr\Ab\Pipes\GetAbTestResults;
+use Handlr\Ab\Pipes\GetAbTests;
+use Handlr\Ab\Pipes\PatchUpdateAbTest;
+use Handlr\Ab\Pipes\PostCreateAbTest;
 use Handlr\Auth\Pipes\RequireAuthPipe;
 use Handlr\Auth\Pipes\RequirePermissionPipe;
 use Handlr\Auth\Pipes\SessionAuthPipe;
@@ -42,6 +48,10 @@ $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
             ->get('/logout', [GetLogout::class])
         ->end()
 
+        // ── A/B Testing (public — needs session, not auth) ──
+        ->get('/ab/assignments', [GetAbAssignments::class])
+        ->post('/ab/capture', [CaptureAbEvent::class])
+
         // ── Authenticated routes ──
         ->through([RequireAuthPipe::class])
 
@@ -54,6 +64,16 @@ $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
             ->end()
 
             // Add your authenticated API routes here
+
+            // ── Admin: A/B Tests ──
+            // ->through([new RequirePermissionPipe('admin.access')])
+            //     ->group('/admin/ab')
+            //         ->get('/', [GetAbTests::class])
+            //         ->post('/', [PostCreateAbTest::class])
+            //         ->get('/{id}', [GetAbTestResults::class])
+            //         ->patch('/{id}', [PatchUpdateAbTest::class])
+            //     ->end()
+            // ->end()
 
         ->end()
 
