@@ -38,6 +38,13 @@ $router->get('/', [new ViewPipe('home')]);
 
 // ── API ──
 $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
+
+    // ── A/B Testing (session only — no CSRF, no auth) ──
+    ->through([StartSessionPipe::class])
+        ->get('/ab/assignments', [GetAbAssignments::class])
+        ->post('/ab/capture', [CaptureAbEvent::class])
+    ->end()
+
     ->through([StartSessionPipe::class, SessionAuthPipe::class, EnsureCsrfTokenPipe::class, VerifyCsrfTokenPipe::class])
 
         // ── Auth (public) ──
