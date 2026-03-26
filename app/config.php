@@ -33,6 +33,14 @@ return [
         'env' => $_ENV['APP_ENV'] ?? 'local',
         'debug' => ($_ENV['APP_DEBUG'] ?? 'false') === 'true',
     ],
+    'mail' => [
+        'transport' => $_ENV['MAIL_TRANSPORT'] ?? 'smtp',
+        'host' => $_ENV['MAIL_HOST'] ?? '127.0.0.1',
+        'port' => $_ENV['MAIL_PORT'] ?? 1025,
+        'region' => $_ENV['MAIL_REGION'] ?? 'us-east-1',
+        'from_address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@example.com',
+        'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'Handlr App',
+    ],
     'database' => [
         'dsn' => $_ENV['DB_DSN'],
         'user' => $_ENV['DB_USER'],
