@@ -43,7 +43,6 @@ class SignupHandler implements Handler
             'username' => $input->username,
             'email' => $input->email,
             'password' => password_hash($input->password, PASSWORD_BCRYPT, ['cost' => 12]),
-            'email_verified_at' => date('Y-m-d H:i:s'),
         ]);
 
         $this->users->insert($user);

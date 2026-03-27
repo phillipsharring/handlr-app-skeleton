@@ -9,6 +9,10 @@
 use App\Auth\GetAuthStatus;
 use App\Auth\Login\PostLoginAttempt;
 use App\Auth\Logout\GetLogout;
+use App\Auth\EmailVerification\GetVerifyEmail;
+use App\Auth\EmailVerification\PostResendVerification;
+use App\Auth\PasswordReset\PostForgotPassword;
+use App\Auth\PasswordReset\PostResetPassword;
 use App\Auth\Signup\PostSignup;
 use App\Profile\GetProfilePipe;
 use App\Profile\PatchUpdateEmail;
@@ -53,6 +57,9 @@ $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
             ->post('/login', [PostLoginAttempt::class])
             ->post('/signup', [PostSignup::class])
             ->get('/logout', [GetLogout::class])
+            ->post('/forgot-password', [PostForgotPassword::class])
+            ->post('/reset-password', [PostResetPassword::class])
+            ->get('/verify-email', [GetVerifyEmail::class])
         ->end()
 
         // ── A/B Testing (public — needs session, not auth) ──
@@ -61,6 +68,9 @@ $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
 
         // ── Authenticated routes ──
         ->through([RequireAuthPipe::class])
+
+            // ── Email verification (resend) ──
+            ->post('/auth/resend-verification', [PostResendVerification::class])
 
             // ── Profile ──
             ->group('/profile')
