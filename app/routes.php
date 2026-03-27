@@ -13,6 +13,7 @@ use App\Auth\EmailVerification\GetVerifyEmail;
 use App\Auth\EmailVerification\PostResendVerification;
 use App\Auth\PasswordReset\PostForgotPassword;
 use App\Auth\PasswordReset\PostResetPassword;
+use App\Auth\RememberMePipe;
 use App\Auth\Signup\PostSignup;
 use App\Profile\GetProfilePipe;
 use App\Profile\PatchUpdateEmail;
@@ -49,7 +50,7 @@ $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
         ->post('/ab/capture', [CaptureAbEvent::class])
     ->end()
 
-    ->through([StartSessionPipe::class, SessionAuthPipe::class, EnsureCsrfTokenPipe::class, VerifyCsrfTokenPipe::class])
+    ->through([StartSessionPipe::class, RememberMePipe::class, SessionAuthPipe::class, EnsureCsrfTokenPipe::class, VerifyCsrfTokenPipe::class])
 
         // ── Auth (public) ──
         ->group('/auth')

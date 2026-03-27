@@ -45,6 +45,21 @@ class LoginHandler implements Handler
         $this->session->regenerate();
         $this->session->set('user_id', $user->id);
 
+        // Remember me — store token and set persistent cookie
+        if ($input->remember_me) {
+            $token = bin2hex(random_bytes(32));
+            $user->remember_token = $token;
+            $this->users->update($user);
+
+            setcookie('remember_token', $token, [
+                'expires' => time() + (30 * 24 * 60 * 60), // 30 days
+                'path' => '/',
+                'httponly' => true,
+                'samesite' => 'Lax',
+                'secure' => ($_SERVER['HTTPS'] ?? '') === 'on',
+            ]);
+        }
+
         // Dispatch login event for Daily Tribute and other on_login effects
         $this->eventManager->dispatch('user.logged_in', new UserLoggedInEvent([
             'user_id' => $user->id,

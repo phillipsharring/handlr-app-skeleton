@@ -14,11 +14,13 @@ class LoginInput implements HandlerInput
 
     public string $email;
     public string $password;
+    public bool $remember_me;
 
     public function __construct(private array $body = [], private ?Validator $validator = null)
     {
         $this->email = $this->body['email'] ?? '';
         $this->password = $this->body['password'] ?? '';
+        $this->remember_me = !empty($this->body['remember_me']);
     }
 
     protected function getValidator(): Validator
