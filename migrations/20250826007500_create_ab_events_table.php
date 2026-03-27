@@ -15,9 +15,12 @@ class Migration_20250826007500_CreateAbEventsTable extends BaseMigration
                 `variant` VARCHAR(20) NOT NULL,
                 `session_id` VARCHAR(128) NOT NULL,
                 `event` VARCHAR(100) NOT NULL,
+                `event_date` DATE NOT NULL DEFAULT (CURDATE()),
+                `count` INT NOT NULL DEFAULT 1,
                 `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
                 CONSTRAINT `fk_ab_events_test_id`
                     FOREIGN KEY (`ab_test_id`) REFERENCES `ab_tests` (`id`) ON DELETE CASCADE,
+                UNIQUE KEY `uq_ab_events_aggregate` (`ab_test_id`, `variant`, `session_id`, `event`, `event_date`),
                 INDEX `idx_ab_events_test_variant` (`ab_test_id`, `variant`),
                 INDEX `idx_ab_events_session` (`session_id`)
             ) ENGINE=InnoDB
