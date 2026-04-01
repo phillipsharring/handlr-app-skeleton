@@ -17,6 +17,7 @@ class Migration_20241225201807_CreateUsersTable extends BaseMigration
                 `remember_token` VARCHAR(100) NULL,
                 `last_login_at` DATETIME DEFAULT NULL,
                 `email_verified_at` DATETIME DEFAULT NULL,
+                `blocked_at` DATETIME DEFAULT NULL,
                 `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
                 `updated_at` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
             ) ENGINE=InnoDB

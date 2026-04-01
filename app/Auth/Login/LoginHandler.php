@@ -42,6 +42,10 @@ class LoginHandler implements Handler
             return $this->result->fail(['Invalid email or password.']);
         }
 
+        if ($user->blocked_at !== null) {
+            return $this->result->fail(['This account has been blocked.']);
+        }
+
         $this->session->regenerate();
         $this->session->set('user_id', $user->id);
 

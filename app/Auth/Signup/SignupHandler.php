@@ -7,6 +7,7 @@ namespace App\Auth\Signup;
 use App\Auth\Signup\Domain\Events\UserSignedUpEvent;
 use App\Users\Data\UsersTable;
 use App\Users\Domain\UserRecord;
+use App\Users\ReservedUsernames;
 use Handlr\Core\EventManager;
 use Handlr\Handlers\Handler;
 use Handlr\Handlers\HandlerInput;
@@ -17,6 +18,7 @@ class SignupHandler implements Handler
 {
     public function __construct(
         private UsersTable $users,
+        private ReservedUsernames $reservedUsernames,
         private SessionInterface $session,
         private EventManager $eventManager,
         private HandlerResult $result,
@@ -26,6 +28,10 @@ class SignupHandler implements Handler
     {
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $input->username)) {
             return $this->result->fail(['Username may only contain letters, numbers, and underscores.']);
+        }
+
+        if ($this->reservedUsernames->isReserved($input->username)) {
+            return $this->result->fail(['This username is not available.']);
         }
 
         $existingUsername = $this->users->findFirst([], ['username' => $input->username]);
