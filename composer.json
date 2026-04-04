@@ -1,7 +1,6 @@
 {
-  "name": "phillipsharring/handlr-app-skeleton",
-  "description": "A app skeleton for phillipsharring/handlr-framework, a lightweight PHP middleware style framework",
-  "version": "0.1.0",
+  "name": "phillipsharring/handlr-app",
+  "description": "App skeleton for Handlr, a lightweight PHP middleware framework",
   "type": "project",
   "keywords": [ "framework", "handlr" ],
   "homepage": "https://github.com/phillipsharring/handlr-app-skeleton",
@@ -32,7 +31,7 @@
   "authors": [
     {
       "name": "Phillip Harrington",
-      "email": "phillip@phillipharrington.comngton.com"
+      "email": "phillip@phillipharrington.com"
     }
   ],
   "require": {
