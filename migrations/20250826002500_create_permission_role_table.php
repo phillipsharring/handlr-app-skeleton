@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Handlr\Database\Migrations\BaseMigration;
 
-class Migration_20260202100003_CreatePermissionRoleTable extends BaseMigration
+class Migration_20250826002500_CreatePermissionRoleTable extends BaseMigration
 {
     public function up(): void
     {

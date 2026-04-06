@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Handlr\Database\Migrations\BaseMigration;
 
-class Migration_20260202100004_CreateSessionsTable extends BaseMigration
+class Migration_20250826000000_CreateSessionsTable extends BaseMigration
 {
     public function up(): void
     {

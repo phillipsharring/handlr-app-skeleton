@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Handlr\Database\Migrations\BaseMigration;
 
-class Migration_20260202100001_CreateRoleUserTable extends BaseMigration
+class Migration_20250826001500_CreateRoleUserTable extends BaseMigration
 {
     public function up(): void
     {

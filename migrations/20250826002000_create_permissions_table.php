@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Handlr\Database\Migrations\BaseMigration;
 
-class Migration_20260202100002_CreatePermissionsTable extends BaseMigration
+class Migration_20250826002000_CreatePermissionsTable extends BaseMigration
 {
     public function up(): void
     {
