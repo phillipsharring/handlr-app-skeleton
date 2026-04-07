@@ -32,6 +32,13 @@ return [
     'app' => [
         'env' => $_ENV['APP_ENV'] ?? 'local',
         'debug' => ($_ENV['APP_DEBUG'] ?? 'false') === 'true',
+        // Service providers run during bootstrap. Order matters: each provider's
+        // register() phase runs in declared order, then every boot() runs in
+        // declared order. To disable a module, comment its provider out.
+        'providers' => [
+            App\Auth\AuthServiceProvider::class,
+            App\Profile\ProfileServiceProvider::class,
+        ],
     ],
     'mail' => [
         'transport' => $_ENV['MAIL_TRANSPORT'] ?? 'smtp',

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f6fea11bebaba6103a25f8dc6733a690",
+    "content-hash": "0a4e555cef01e7af1cebc0978a104301",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -184,16 +184,16 @@
         },
         {
             "name": "phillipsharring/handlr-framework",
-            "version": "v0.3.1",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phillipsharring/handlr-framework.git",
-                "reference": "9a62ca83047e48dce542467d26ce3e40fb6ca6ad"
+                "reference": "39432017b26a11c08aeabeafb4073e157cc72e87"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phillipsharring/handlr-framework/zipball/9a62ca83047e48dce542467d26ce3e40fb6ca6ad",
-                "reference": "9a62ca83047e48dce542467d26ce3e40fb6ca6ad",
+                "url": "https://api.github.com/repos/phillipsharring/handlr-framework/zipball/39432017b26a11c08aeabeafb4073e157cc72e87",
+                "reference": "39432017b26a11c08aeabeafb4073e157cc72e87",
                 "shasum": ""
             },
             "require": {
@@ -239,9 +239,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phillipsharring/handlr-framework/issues",
-                "source": "https://github.com/phillipsharring/handlr-framework/tree/v0.3.1"
+                "source": "https://github.com/phillipsharring/handlr-framework/tree/v0.5.0"
             },
-            "time": "2026-03-27T00:25:51+00:00"
+            "time": "2026-04-07T14:47:06+00:00"
         },
         {
             "name": "phpoption/phpoption",

@@ -4,31 +4,32 @@
  * Application Routes
  *
  * @var Router $router The router instance provided by the Kernel
+ *
+ * This file declares the cross-cutting pipe stacks (CORS, session, CSRF, auth)
+ * once and exposes them as named JUNCTIONS that service providers can attach
+ * routes to. The actual route registrations live in each domain's
+ * ServiceProvider::routes() — Auth, Profile, etc. — so adding a new module
+ * means dropping a provider into the providers list, not editing this file.
+ *
+ * Junctions declared here:
+ *   - api.public  → /api with [Cors, VerifyOrigin, StartSession]
+ *                   For session-only public endpoints (e.g. A/B test capture).
+ *   - api.session → /api with [Cors, VerifyOrigin, StartSession, RememberMe,
+ *                              SessionAuth, CheckBlocked, EnsureCsrf, VerifyCsrf]
+ *                   For routes that need the full session/CSRF stack but no
+ *                   auth requirement (login, signup, password reset, etc.).
+ *   - api.authed  → api.session + RequireAuth
+ *                   For authenticated routes (profile, resend-verification).
+ *
+ * Only routes that don't belong to a domain (e.g. the root view-pipe, or
+ * framework-provided ones like A/B testing) live in this file directly.
  */
 
-use App\Auth\GetAuthStatus;
-use App\Auth\Login\PostLoginAttempt;
-use App\Auth\Logout\GetLogout;
-use App\Auth\EmailVerification\GetVerifyEmail;
-use App\Auth\EmailVerification\PostResendVerification;
-use App\Auth\PasswordReset\PostForgotPassword;
-use App\Auth\PasswordReset\PostResetPassword;
-use App\Auth\CheckBlockedPipe;
-use App\Auth\RememberMePipe;
-use App\Auth\Signup\PostSignup;
-use App\Users\BlockUser\PatchBlockUser;
-use App\Profile\GetProfilePipe;
-use App\Profile\PatchUpdateEmail;
-use App\Profile\PatchUpdatePassword;
-use App\Profile\PatchUpdateUsername;
 use Handlr\Ab\Pipes\CaptureAbEvent;
 use Handlr\Ab\Pipes\GetAbAssignments;
-use Handlr\Ab\Pipes\GetAbTestResults;
-use Handlr\Ab\Pipes\GetAbTests;
-use Handlr\Ab\Pipes\PatchUpdateAbTest;
-use Handlr\Ab\Pipes\PostCreateAbTest;
+use App\Auth\CheckBlockedPipe;
+use App\Auth\RememberMePipe;
 use Handlr\Auth\Pipes\RequireAuthPipe;
-use Handlr\Auth\Pipes\RequirePermissionPipe;
 use Handlr\Auth\Pipes\SessionAuthPipe;
 use Handlr\Auth\Pipes\StartSessionPipe;
 use Handlr\Core\Routes\Router;
@@ -43,58 +44,33 @@ use Handlr\Pipes\ViewPipe;
 // ── Public pages ──
 $router->get('/', [new ViewPipe('home')]);
 
-// ── API ──
+// ── API pipe stacks + junctions ──
 $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
 
-    // ── A/B Testing (session only — no CSRF, no auth) ──
+    // ── Session-only (no auth, no CSRF) ──
+    // Junction: api.public
     ->through([StartSessionPipe::class])
+        ->junction('api.public')
         ->get('/ab/assignments', [GetAbAssignments::class])
         ->post('/ab/capture', [CaptureAbEvent::class])
     ->end()
 
-    ->through([StartSessionPipe::class, RememberMePipe::class, SessionAuthPipe::class, CheckBlockedPipe::class, EnsureCsrfTokenPipe::class, VerifyCsrfTokenPipe::class])
-
-        // ── Auth (public) ──
-        ->group('/auth')
-            ->get('/me', [GetAuthStatus::class])
-            ->post('/login', [PostLoginAttempt::class])
-            ->post('/signup', [PostSignup::class])
-            ->get('/logout', [GetLogout::class])
-            ->post('/forgot-password', [PostForgotPassword::class])
-            ->post('/reset-password', [PostResetPassword::class])
-            ->get('/verify-email', [GetVerifyEmail::class])
-        ->end()
-
-        // ── A/B Testing (public — needs session, not auth) ──
-        ->get('/ab/assignments', [GetAbAssignments::class])
-        ->post('/ab/capture', [CaptureAbEvent::class])
+    // ── Full session + CSRF (no auth required) ──
+    // Junction: api.session — providers attach login/signup/etc. here.
+    ->through([
+        StartSessionPipe::class,
+        RememberMePipe::class,
+        SessionAuthPipe::class,
+        CheckBlockedPipe::class,
+        EnsureCsrfTokenPipe::class,
+        VerifyCsrfTokenPipe::class,
+    ])
+        ->junction('api.session')
 
         // ── Authenticated routes ──
+        // Junction: api.authed — providers attach profile/etc. here.
         ->through([RequireAuthPipe::class])
-
-            // ── Email verification (resend) ──
-            ->post('/auth/resend-verification', [PostResendVerification::class])
-
-            // ── Profile ──
-            ->group('/profile')
-                ->get('', [GetProfilePipe::class])
-                ->patch('/username', [PatchUpdateUsername::class])
-                ->patch('/email', [PatchUpdateEmail::class])
-                ->patch('/password', [PatchUpdatePassword::class])
-            ->end()
-
-            // Add your authenticated API routes here
-
-            // ── Admin: A/B Tests ──
-            // ->through([new RequirePermissionPipe('admin.access')])
-            //     ->group('/admin/ab')
-            //         ->get('/', [GetAbTests::class])
-            //         ->post('/', [PostCreateAbTest::class])
-            //         ->get('/{id}', [GetAbTestResults::class])
-            //         ->patch('/{id}', [PatchUpdateAbTest::class])
-            //     ->end()
-            // ->end()
-
+            ->junction('api.authed')
         ->end()
 
     ->end()

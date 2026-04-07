@@ -40,14 +40,11 @@ if (!defined('HANDLR_APP_ROOT')) {
 
 const HANDLR_APP_APP_PATH = __DIR__ . '/app';
 
-use App\Auth\Data\UserPermissionsQuery;
-use App\Events\EventServiceProvider;
 use Dotenv\Dotenv;
-use Handlr\Auth\AuthContext;
-use Handlr\Auth\PermissionsProviderInterface;
 use Handlr\Config\Loader;
 use Handlr\Core\Container\Container;
 use Handlr\Core\EventManager;
+use Handlr\Core\ServiceProviderRegistry;
 use Handlr\Database\Db;
 use Handlr\Database\DbInterface;
 use Handlr\Log\Logger;
@@ -79,25 +76,41 @@ function handlr_app(): array
 
     $appEnv = $_ENV['APP_ENV'] ?? 'local';
 
+    // ── Framework-level singletons ──
+    // Every Handlr app needs these regardless of which modules are enabled.
+    // Anything app- or domain-specific (Auth bindings, event listeners, etc.)
+    // belongs in a ServiceProvider, not here.
     $container = new Container();
-    $container->singleton(AuthContext::class);
-    $container->bind(PermissionsProviderInterface::class, UserPermissionsQuery::class);
     $container->singleton(EventManager::class);
     $container->singleton(LoggerInterface::class, new Logger(HANDLR_APP_ROOT . '/logs/app.log'));
-
     $container->bind(DbInterface::class, Db::class);
 
+    // ── Config ──
     $configPath = HANDLR_APP_APP_PATH . '/config.php';
     $config = Loader::load($configPath, $container);
 
+    // Lock the database in as a singleton AFTER config is loaded so the lazy
+    // PDO has its DSN/credentials available on first connect.
     $container->singleton(DbInterface::class, $container->get(DbInterface::class));
 
-    // Register event listeners
-    EventServiceProvider::register($container, $container->get(EventManager::class));
+    // ── Service providers ──
+    // Build the registry from `app.providers`, run the register() phase, fill
+    // any config defaults the providers want, and wire their event listeners
+    // into the EventManager. The Kernel handles the boot()/routes() phase
+    // later (web only). CLI scripts skip those phases and only read the
+    // declarative metadata (migration paths, seed paths).
+    $registry = new ServiceProviderRegistry($container);
+    $registry->addMany($config->get('app.providers', []));
+    $registry->applyConfigDefaults($config);
+    $registry->registerAll();
+    $registry->applyEvents($container->get(EventManager::class));
+
+    $container->singleton(ServiceProviderRegistry::class, $registry);
 
     $app = [
         'container' => $container,
         'config' => $config,
+        'registry' => $registry,
     ];
 
     return $app;
