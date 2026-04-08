@@ -60,6 +60,11 @@ require_once dirname(__DIR__, 1) . '/../bootstrap.php';
 
 // ── Pipe stacks the app declares as junctions in routes.php ──
 
+const STACK_BASIC = [
+    CorsPipe::class,
+    VerifyOriginPipe::class,
+];
+
 const STACK_SESSION_ONLY = [
     CorsPipe::class,
     VerifyOriginPipe::class,
@@ -149,13 +154,13 @@ const EXPECTED_API_ROUTES = [
     // [method, path, pipe-stack, owning origin]
     ['GET',   '/api/ab/assignments',           [...STACK_SESSION_ONLY, GetAbAssignments::class],       'app'],
     ['POST',  '/api/ab/capture',               [...STACK_SESSION_ONLY, CaptureAbEvent::class],         'app'],
-    ['GET',   '/api/examples/hello',           [...STACK_SESSION_ONLY, HelloPipe::class],              ExamplesServiceProvider::class],
-    ['POST',  '/api/examples/echo',            [...STACK_SESSION_ONLY, EchoPipe::class],               ExamplesServiceProvider::class],
-    ['GET',   '/api/examples/toast',           [...STACK_SESSION_ONLY, ToastPipe::class],              ExamplesServiceProvider::class],
-    ['GET',   '/api/examples/detail',          [...STACK_SESSION_ONLY, ExampleDetailPipe::class],      ExamplesServiceProvider::class],
-    ['POST',  '/api/examples/field-errors',    [...STACK_SESSION_ONLY, FieldErrorsPipe::class],        ExamplesServiceProvider::class],
-    ['POST',  '/api/examples/invariant-error', [...STACK_SESSION_ONLY, InvariantErrorPipe::class],     ExamplesServiceProvider::class],
-    ['POST',  '/api/examples/success',         [...STACK_SESSION_ONLY, SuccessPipe::class],            ExamplesServiceProvider::class],
+    ['GET',   '/api/examples/hello',           [...STACK_BASIC, HelloPipe::class],              ExamplesServiceProvider::class],
+    ['POST',  '/api/examples/echo',            [...STACK_BASIC, EchoPipe::class],               ExamplesServiceProvider::class],
+    ['GET',   '/api/examples/toast',           [...STACK_BASIC, ToastPipe::class],              ExamplesServiceProvider::class],
+    ['GET',   '/api/examples/detail',          [...STACK_BASIC, ExampleDetailPipe::class],      ExamplesServiceProvider::class],
+    ['POST',  '/api/examples/field-errors',    [...STACK_BASIC, FieldErrorsPipe::class],        ExamplesServiceProvider::class],
+    ['POST',  '/api/examples/invariant-error', [...STACK_BASIC, InvariantErrorPipe::class],     ExamplesServiceProvider::class],
+    ['POST',  '/api/examples/success',         [...STACK_BASIC, SuccessPipe::class],            ExamplesServiceProvider::class],
     ['GET',   '/api/auth/me',                  [...STACK_SESSION_FULL, GetAuthStatus::class],          AuthServiceProvider::class],
     ['POST',  '/api/auth/login',               [...STACK_SESSION_FULL, PostLoginAttempt::class],      AuthServiceProvider::class],
     ['POST',  '/api/auth/signup',              [...STACK_SESSION_FULL, PostSignup::class],            AuthServiceProvider::class],
