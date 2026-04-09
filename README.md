@@ -1,5 +1,7 @@
 # Handlr App Skeleton
 
+![Handlr](handlr.png)
+
 Starter project for building applications with [Handlr Framework](https://github.com/phillipsharring/handlr-framework), a lightweight PHP middleware-style framework.
 
 ## Installation
