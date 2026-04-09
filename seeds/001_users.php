@@ -14,5 +14,13 @@ return [
             'password' => password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]),
             'email_verified_at' => date('Y-m-d H:i:s'),
         ],
+        [
+            'id' => '019bca8d-283f-7073-9288-52bd18413753',
+            'name' => 'User',
+            'username' => 'user',
+            'email' => 'user@example.com',
+            'password' => password_hash('password', PASSWORD_BCRYPT, ['cost' => 12]),
+            'email_verified_at' => date('Y-m-d H:i:s'),
+        ],
     ],
 ];

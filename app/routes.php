@@ -12,6 +12,10 @@
  * means dropping a provider into the providers list, not editing this file.
  *
  * Junctions declared here:
+ *   - api.basic   → /api with [Cors, VerifyOrigin]
+ *                   For stateless endpoints that only need CORS + origin
+ *                   verification — no session, no CSRF, no auth (e.g. demo
+ *                   endpoints, public health checks).
  *   - api.public  → /api with [Cors, VerifyOrigin, StartSession]
  *                   For session-only public endpoints (e.g. A/B test capture).
  *   - api.session → /api with [Cors, VerifyOrigin, StartSession, RememberMe,
@@ -46,6 +50,11 @@ $router->get('/', [new ViewPipe('home')]);
 
 // ── API pipe stacks + junctions ──
 $router->group('/api', [CorsPipe::class, VerifyOriginPipe::class])
+
+    // ── Bare /api (no session, no CSRF, no auth) ──
+    // Junction: api.basic — for stateless endpoints that only need the
+    // CORS + origin checks the parent /api group already provides.
+    ->junction('api.basic')
 
     // ── Session-only (no auth, no CSRF) ──
     // Junction: api.public
