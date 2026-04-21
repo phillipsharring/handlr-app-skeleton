@@ -96,17 +96,17 @@ This skeleton follows the Handlr convention of organizing code by **feature**, n
 app/
   Users/
     CreateUser/
-      PostCreateUser.php         (Pipe — HTTP layer)
-      CreateUserHandler.php      (Handler — business logic)
-      CreateUserInput.php        (HandlerInput — validated input)
+      PostCreateUser.php         (Pipe  - HTTP layer)
+      CreateUserHandler.php      (Handler  - business logic)
+      CreateUserInput.php        (HandlerInput  - validated input)
     Read/
-      GetUsersList.php           (Pipe — list endpoint)
-      GetOneUser.php             (Pipe — detail endpoint)
+      GetUsersList.php           (Pipe  - list endpoint)
+      GetOneUser.php             (Pipe  - detail endpoint)
     Data/
-      UsersTable.php             (Table — CRUD)
-      UsersAdminQuery.php        (Query — complex reads)
+      UsersTable.php             (Table  - CRUD)
+      UsersAdminQuery.php        (Query  - complex reads)
     Domain/
-      UserRecord.php             (Record — domain object)
+      UserRecord.php             (Record  - domain object)
 ```
 
 **Pipes** handle HTTP (extract input, call handler, format response).
